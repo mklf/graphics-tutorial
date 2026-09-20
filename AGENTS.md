@@ -42,7 +42,8 @@
 ├── Q&A.md               # 学习者问答记录（见「核心设计决策」）
 ├── index.html           # 首页：课程导航 + WebGL 动态背景
 ├── common/
-│   └── webgl-utils.js   # 公共工具：getContext / compileShader / createProgram / createBuffer / resizeCanvas
+│   ├── webgl-utils.js   # 公共工具：getContext / compileShader / createProgram / createBuffer / resizeCanvas
+│   └── code-view.js     # 课程页源码展示：读取 main.js 并高亮渲染（含行号）
 └── lessons/
     └── NN-kebab-name/   # 每课一个目录：index.html + main.js
 ```
@@ -50,7 +51,7 @@
 ## 添加新课程的完整流程（缺一不可）
 
 1. 在 `lessons/` 下建目录，命名格式：`NN-英文短名/`（NN 为两位课号，如 `03-attributes-interpolation`）
-2. 写 `index.html`：复制已有课程的模板（含「← 返回首页」链接，引用 `../../common/webgl-utils.js`）
+2. 写 `index.html`：复制已有课程的模板（含「← 返回首页」链接，引用 `../../common/webgl-utils.js` 与 `../../common/code-view.js`，页面下半部分会自动展示本课 main.js 源码）
 3. 写 `main.js`，遵守下面的代码风格
 4. **在 `index.html` 首页的 `parts` 数组中注册该课**：填 `num/title/desc/link`，并把 `ready` 从 `false` 改为 `true`
 5. 同步更新 `README.md` 中的大纲表格（如果内容有变化）
@@ -64,6 +65,7 @@
 - GLSL 着色器源码以内联模板字符串写在 main.js 中，方便对照阅读
 - 画布尺寸 640×480，深蓝背景 `#1a1a2e` 系（与首页风格一致）
 - 页面左上角固定「← 返回首页」链接（`../../index.html`）
+- 课程页布局：上方画布展示运行效果，下方用 `common/code-view.js` 内嵌展示本课 `main.js` 源码（讲解写在注释里，学习者对照着看）
 - 优先复用 `common/webgl-utils.js`，不要在课程里重复造工具函数；若某工具只在进阶课需要，直接写在该课内并注释说明
 
 ## 课程大纲状态

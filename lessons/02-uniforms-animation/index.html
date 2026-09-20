@@ -5,16 +5,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>第 02 课：Uniforms 与动画</title>
   <style>
-    body { margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #1a1a2e; }
-    canvas { width: 640px; height: 480px; background: #000; }
+    body {
+      margin: 0;
+      padding: 48px 16px 64px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #1a1a2e;
+      color: #e8e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+    }
+    canvas { width: 640px; height: 480px; max-width: 100%; background: #000; border-radius: 8px; }
+    .code-section { width: 760px; max-width: 100%; margin-top: 36px; }
+    .code-section h2 { font-size: 1.1rem; margin: 0 0 6px; }
+    .code-section .tip { color: #9aa0b4; font-size: 0.85rem; margin: 0 0 14px; }
     a.home { position: fixed; top: 16px; left: 16px; color: #6ee7ff; text-decoration: none; font-size: 0.9rem; }
     a.home:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
   <a class="home" href="../../index.html">← 返回首页</a>
+
+  <!-- 上面是运行效果 -->
   <canvas id="glcanvas"></canvas>
+
+  <!-- 下面是本课源码（含讲解注释） -->
+  <section class="code-section">
+    <h2>本课源码</h2>
+    <p class="tip">WebGL 的讲解全部写在代码注释里，对照上方画面逐行阅读。</p>
+    <div id="code">源码加载中…</div>
+  </section>
+
   <script src="../../common/webgl-utils.js"></script>
+  <script src="../../common/code-view.js"></script>
   <script src="main.js"></script>
+  <script>CodeView.show("main.js", document.getElementById("code"));</script>
 </body>
 </html>
