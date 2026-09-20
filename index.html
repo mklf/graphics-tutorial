@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>图形学教程 · WebGL 版</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+      background: #0f0f1a;
+      color: #e8e8f0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* WebGL 动态背景 */
+    #bg {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 80px 24px 60px;
+    }
+
+    header { text-align: center; margin-bottom: 64px; }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #6ee7ff, #a78bfa, #f472b6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 16px;
+    }
+
+    .subtitle { color: #9aa0b4; font-size: 1.1rem; line-height: 1.8; }
+
+    .part { margin-bottom: 48px; }
+
+    .part-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      padding-left: 12px;
+      border-left: 4px solid #6ee7ff;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 12px;
+      padding: 20px;
+      transition: transform 0.2s, border-color 0.2s, background 0.2s;
+    }
+
+    .card.ready:hover {
+      transform: translateY(-4px);
+      border-color: #6ee7ff;
+      background: rgba(110, 231, 255, 0.08);
+    }
+
+    .card.wip { opacity: 0.45; cursor: default; }
+
+    .card-num { font-size: 0.8rem; color: #6ee7ff; font-weight: 600; letter-spacing: 1px; }
+    .card-title { font-size: 1.1rem; font-weight: 700; margin: 6px 0; }
+    .card-desc { font-size: 0.9rem; color: #9aa0b4; line-height: 1.6; }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 2px 10px;
+      border-radius: 999px;
+      margin-top: 12px;
+    }
+    .badge.ready { background: rgba(52, 211, 153, 0.15); color: #34d399; }
+    .badge.wip { background: rgba(255, 255, 255, 0.08); color: #9aa0b4; }
+
+    footer {
+      text-align: center;
+      color: #5b6070;
+      font-size: 0.85rem;
+      margin-top: 64px;
+      line-height: 2;
+    }
+    footer a { color: #6ee7ff; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <!-- 首页背景本身就是一段 WebGL shader 演示 -->
+  <canvas id="bg"></canvas>
+
+  <div class="container">
+    <header>
+      <h1>图形学教程</h1>
+      <p class="subtitle">
+        以 WebGL 为教学语言的图形学入门教程<br>
+        所有课程在浏览器中直接运行，代码注释详尽，附带动手练习
+      </p>
+    </header>
+
+    <div id="parts"></div>
+
+    <footer>
+      <p>背景动画由 WebGL 片元着色器实时渲染 —— 学完本教程你也能写出来</p>
+      <p><a href="https://github.com/mklf/graphics-tutorial">GitHub 仓库</a></p>
+    </footer>
+  </div>
+
+  <script>
+    // ---------- 课程数据：新增课程时只需在这里加一条 ----------
+    const parts = [
+      {
+        title: "第一部分 · WebGL 基础",
+        lessons: [
+          { num: "01", title: "Hello Triangle", desc: "渲染管线初识：着色器、缓冲区、画第一个三角形", link: "lessons/01-hello-triangle/", ready: true },
+          { num: "02", title: "Uniforms 与动画", desc: "uniform 变量、requestAnimationFrame、用时间驱动颜色与缩放", link: "lessons/02-uniforms-animation/", ready: true },
+          { num: "03", title: "属性与插值", desc: "顶点颜色、varying 变量、光栅化插值", ready: false },
+          { num: "04", title: "纹理贴图", desc: "加载图片、UV 坐标、纹理采样", ready: false },
+        ],
+      },
+      {
+        title: "第二部分 · 进入三维",
+        lessons: [
+          { num: "05", title: "变换矩阵", desc: "平移 / 旋转 / 缩放，模型矩阵", ready: false },
+          { num: "06", title: "画一个立方体", desc: "索引缓冲、深度测试", ready: false },
+          { num: "07", title: "相机与投影", desc: "视图矩阵、透视投影、MVP 矩阵", ready: false },
+          { num: "08", title: "第一人称漫游", desc: "键盘鼠标控制相机", ready: false },
+        ],
+      },
+      {
+        title: "第三部分 · 光照与材质",
+        lessons: [
+          { num: "09", title: "法线与漫反射", desc: "Lambert 光照模型", ready: false },
+          { num: "10", title: "高光与 Phong", desc: "环境光 + 漫反射 + 镜面高光", ready: false },
+          { num: "11", title: "多光源", desc: "点光源、平行光、聚光灯", ready: false },
+        ],
+      },
+      {
+        title: "第四部分 · 进阶专题",
+        lessons: [
+          { num: "12", title: "帧缓冲与后处理", desc: "FBO、离屏渲染、模糊 / 边缘检测", ready: false },
+          { num: "13", title: "阴影", desc: "Shadow Map", ready: false },
+          { num: "14", title: "天空盒与环境", desc: "Cube Map", ready: false },
+          { num: "15", title: "WebGL2 速览", desc: "VAO、3D 纹理、实例化渲染", ready: false },
+        ],
+      },
+    ];
+
+    // 渲染课程卡片
+    const partsEl = document.getElementById("parts");
+    for (const part of parts) {
+      const section = document.createElement("section");
+      section.className = "part";
+      section.innerHTML = `<h2 class="part-title">${part.title}</h2>`;
+
+      const grid = document.createElement("div");
+      grid.className = "grid";
+
+      for (const lesson of part.lessons) {
+        const card = document.createElement(lesson.ready ? "a" : "div");
+        card.className = `card ${lesson.ready ? "ready" : "wip"}`;
+        if (lesson.ready) card.href = lesson.link;
+        card.innerHTML = `
+          <div class="card-num">第 ${lesson.num} 课</div>
+          <div class="card-title">${lesson.title}</div>
+          <div class="card-desc">${lesson.desc}</div>
+          <span class="badge ${lesson.ready ? "ready" : "wip"}">${lesson.ready ? "开始学习 →" : "待更新"}</span>
+        `;
+        grid.appendChild(card);
+      }
+
+      section.appendChild(grid);
+      partsEl.appendChild(section);
+    }
+
+    // ---------- 背景 WebGL 动画（片元着色器渐变流场） ----------
+    (function () {
+      const canvas = document.getElementById("bg");
+      const gl = canvas.getContext("webgl");
+      if (!gl) return;
+
+      const vsSource = `
+        attribute vec2 a_position;
+        void main() { gl_Position = vec4(a_position, 0.0, 1.0); }
+      `;
+
+      // 一个流动的柔和渐变，类似极光
+      const fsSource = `
+        precision mediump float;
+        uniform vec2 u_resolution;
+        uniform float u_time;
+
+        void main() {
+          vec2 uv = gl_FragCoord.xy / u_resolution;
+          float t = u_time * 0.15;
+
+          float wave1 = sin(uv.x * 3.0 + t) * 0.5 + 0.5;
+          float wave2 = sin(uv.y * 4.0 - t * 1.3 + uv.x * 2.0) * 0.5 + 0.5;
+          float wave3 = sin((uv.x + uv.y) * 2.5 + t * 0.7) * 0.5 + 0.5;
+
+          vec3 base = vec3(0.06, 0.06, 0.10);
+          vec3 color = base
+            + vec3(0.10, 0.20, 0.35) * wave1
+            + vec3(0.15, 0.08, 0.30) * wave2
+            + vec3(0.05, 0.15, 0.25) * wave3;
+
+          // 顶部到底部的轻微暗角
+          color *= 1.0 - 0.35 * distance(uv, vec2(0.5, 0.4));
+          gl_FragColor = vec4(color, 1.0);
+        }
+      `;
+
+      function compile(type, src) {
+        const s = gl.createShader(type);
+        gl.shaderSource(s, src);
+        gl.compileShader(s);
+        return s;
+      }
+
+      const program = gl.createProgram();
+      gl.attachShader(program, compile(gl.VERTEX_SHADER, vsSource));
+      gl.attachShader(program, compile(gl.FRAGMENT_SHADER, fsSource));
+      gl.linkProgram(program);
+      gl.useProgram(program);
+
+      // 一个铺满全屏的三角形（比两个三角形拼矩形更省）
+      const buf = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+      const aPos = gl.getAttribLocation(program, "a_position");
+      gl.enableVertexAttribArray(aPos);
+      gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+      const uResolution = gl.getUniformLocation(program, "u_resolution");
+      const uTime = gl.getUniformLocation(program, "u_time");
+
+      function frame(timeMs) {
+        const dpr = window.devicePixelRatio || 1;
+        const w = Math.floor(canvas.clientWidth * dpr);
+        const h = Math.floor(canvas.clientHeight * dpr);
+        if (canvas.width !== w || canvas.height !== h) {
+          canvas.width = w;
+          canvas.height = h;
+        }
+        gl.viewport(0, 0, w, h);
+        gl.uniform2f(uResolution, w, h);
+        gl.uniform1f(uTime, timeMs * 0.001);
+        gl.drawArrays(gl.TRIANGLES, 0, 3);
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    })();
+  </script>
+</body>
+</html>
