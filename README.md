@@ -59,6 +59,8 @@ python3 -m http.server 8000
 ```
 图形学教程/
 ├── README.md            # 本文件
+├── Q&A.md               # 学习过程中的问答记录
+├── AGENTS.md            # 给 AI 协作者的项目说明
 ├── common/
 │   └── webgl-utils.js   # 公共工具函数（着色器编译、画布自适应等）
 └── lessons/
