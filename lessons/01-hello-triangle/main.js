@@ -32,6 +32,15 @@
  *                  （第 03 课讲）。注意片元着色器没有 attribute，
  *                  顶点数据只能靠 varying 插值间接到达
  *   输出则是两个内置变量：顶点着色器写 gl_Position，片元着色器写 gl_FragColor。
+ *
+ * gl_Position 和 varying 是什么关系？
+ *   两者都是顶点着色器的输出，但分工不同，由光栅化联系起来：
+ *     gl_Position 管「形状」：光栅化根据三个顶点的位置算出三角形盖住
+ *       哪些像素，以及每个像素受各顶点多大影响（插值权重）
+ *     varying 管「数据」：要传给片元着色器的值（如颜色），光栅化会用
+ *       同一组权重，把顶点处的值平滑混合到每个像素上
+ *   即：gl_Position 决定插值的「权重」，varying 是被插值的「货物」。
+ *   gl_Position 必写且不传给片元着色器；varying 可有可无（本课没用）。
  */
 
 const gl = WebGLUtils.getContext("glcanvas");
