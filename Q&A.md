@@ -43,6 +43,10 @@
 **问**：顶点着色器的输出既说是 `gl_Position` 又说 varying，两者是什么关系？
 **答**：两者都是顶点着色器的输出，分工不同，由光栅化联系起来。`gl_Position` 是必写的特殊输出，管「形状」：光栅化根据三个顶点的位置算出三角形覆盖哪些像素，以及每个像素受三个顶点的影响比例（插值权重）。varying 是可选的自定义输出，管「数据」：想传给片元着色器的值（颜色、UV 等），光栅化用同一组权重把各顶点的 varying 值平滑混合到每个像素上。一句话：`gl_Position` 决定插值的权重，varying 是被插值的货物。`gl_Position` 本身不会到达片元着色器（像素坐标读内置变量 `gl_FragCoord`）；varying 可有可无，01/02 课都没用，第 03 课的渐变三角形就是靠它把三个顶点的红绿蓝混合到中间像素。已补入第 01 课注释。
 
+### 还有哪些内置的输入输出变量（2026-09-21）
+**问**：除了 attribute / uniform / varying 和 gl_Position / gl_FragColor，还有别的输入输出变量吗？
+**答**：自定义的输入输出永远只有 attribute / uniform / varying 三种，其余都是 GPU 自动提供的内置变量：顶点着色器另有输出 `gl_PointSize`（画 gl.POINTS 时点的大小）；片元着色器另有输入 `gl_FrontFacing`（像素是否属于正面三角形，第 06 课背面剔除用到）和 `gl_PointCoord`（片元在点内的 [0,1] 坐标，画圆点/粒子用）；扩展/进阶输出 `gl_FragData`（多渲染目标，和第 12 课帧缓冲相关）与 WebGL2 的 `gl_FragDepth`（手动写深度）；WebGL2 还新增顶点输入 `gl_VertexID` / `gl_InstanceID`（顶点/实例自动编号，第 15 课讲）。已补入第 01 课注释。
+
 ## 第 02 课 Uniforms 与动画
 
 （暂无）

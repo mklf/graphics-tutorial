@@ -41,6 +41,15 @@
  *       同一组权重，把顶点处的值平滑混合到每个像素上
  *   即：gl_Position 决定插值的「权重」，varying 是被插值的「货物」。
  *   gl_Position 必写且不传给片元着色器；varying 可有可无（本课没用）。
+ *
+ * 其他内置输入输出变量（了解即可，后续课程用到再细讲）：
+ *   gl_PointSize   —— 顶点着色器输出：画 gl.POINTS 时点的大小（像素）
+ *   gl_PointCoord  —— 片元着色器输入：片元在点内的坐标 [0,1]，可画圆点
+ *   gl_FrontFacing —— 片元着色器输入：该像素是否属于正面三角形
+ *                     （第 06 课背面剔除用到）
+ *   gl_FragData    —— 片元着色器输出（扩展）：一次写多个渲染目标
+ *   WebGL2 另有 gl_FragDepth（手动写深度）、gl_VertexID / gl_InstanceID
+ *   （顶点/实例自动编号），第 15 课讲
  */
 
 const gl = WebGLUtils.getContext("glcanvas");
