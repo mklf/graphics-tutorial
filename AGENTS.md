@@ -45,7 +45,7 @@
 ├── common/
 │   ├── webgl-utils.js   # 公共工具：getContext / compileShader / createProgram / createBuffer / resizeCanvas
 │   └── code-view.js     # 课程页源码展示：读取 main.js 并高亮渲染（含行号）
-├── playground/          # 「动手试试」练习场：选题 → 在线编辑（CodeMirror CDN）→ iframe 实时运行
+├── playground/          # 「动手试试」练习场：选题 → 在线编辑（CodeMirror CDN）→ 手动运行看效果（⌘/Ctrl+Enter 或按钮）
 │   ├── index.html
 │   ├── playground.js    # 题目注册表（EXERCISES）+ 编辑器 + iframe 运行器
 │   └── templates/       # 每题一个可直接运行的模板，任务写在开头注释

@@ -30,11 +30,11 @@
   };
 
   let current = null;
-  let debounceTimer = 0;
   let hasError = false;
   const templateCache = {};
 
   // ---------- 编辑器：优先 CodeMirror，失败降级纯 textarea ----------
+  // 刷新方式只有两种：⌘/Ctrl + Enter、点「▶ 运行」按钮（不做输入自动刷新）
 
   let cm = null;
   if (window.CodeMirror) {
@@ -48,15 +48,12 @@
       indentUnit: 2,
       extraKeys: { "Cmd-Enter": run, "Ctrl-Enter": run },
     });
-    cm.on("change", scheduleRun);
   } else {
     els.textarea.classList.add("fallback-visible");
-    els.textarea.addEventListener("input", scheduleRun);
     els.textarea.addEventListener("keydown", (e) => {
       if (e.key === "Tab") { // Tab 缩进而不是跳焦点
         e.preventDefault();
         els.textarea.setRangeText("  ", els.textarea.selectionStart, els.textarea.selectionEnd, "end");
-        scheduleRun();
       }
       if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
         e.preventDefault();
@@ -67,11 +64,6 @@
 
   const getCode = () => (cm ? cm.getValue() : els.textarea.value);
   const setCode = (code) => (cm ? cm.setValue(code) : (els.textarea.value = code));
-
-  function scheduleRun() {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(run, 700); // 停止输入 0.7 秒后自动运行
-  }
 
   // ---------- 左侧题目列表 ----------
 
