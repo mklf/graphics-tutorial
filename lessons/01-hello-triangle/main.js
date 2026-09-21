@@ -113,3 +113,9 @@ gl.drawArrays(gl.TRIANGLES, 0, 3);
 // - 修改 positions 里的坐标，看看三角形怎么变化
 // - 修改片元着色器里的 vec4 颜色值
 // - 把 gl.TRIANGLES 改成 gl.POINTS 或 gl.LINES，看画出了什么
+// - 参数方程画圆：用 for 循环生成 64 个顶点
+//     const t = (i / 64) * Math.PI * 2;
+//     positions.push(0.6 * Math.cos(t), 0.6 * Math.sin(t));
+//   然后画 gl.LINE_LOOP——GPU 只会连直线，曲线永远是折线的近似
+// - 进阶：attribute 不存坐标、改存参数 t（attribute float a_t），
+//   在顶点着色器里用 cos/sin 算位置，几何定义就搬进了着色器
