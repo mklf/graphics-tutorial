@@ -44,6 +44,25 @@
 
     .subtitle { color: #9aa0b4; font-size: 1.1rem; line-height: 1.8; }
 
+    /* 练习场入口横幅 */
+    .banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 0 auto 56px;
+      padding: 16px 24px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: #e8e8f0;
+      background: linear-gradient(135deg, rgba(110, 231, 255, 0.12), rgba(167, 139, 250, 0.12), rgba(244, 114, 182, 0.12));
+      border: 1px solid rgba(110, 231, 255, 0.35);
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .banner:hover { transform: translateY(-2px); border-color: #6ee7ff; }
+    .banner strong { color: #6ee7ff; }
+    .banner span { color: #9aa0b4; font-size: 0.9rem; }
+
     .part { margin-bottom: 48px; }
 
     .part-title {
@@ -115,6 +134,11 @@
         所有课程在浏览器中直接运行，代码注释详尽，附带动手练习
       </p>
     </header>
+
+    <a class="banner" href="playground/">
+      🧪 <strong>动手试试 · 练习场</strong>
+      <span>选题 → 在线改代码 → 即时看效果，不用配置任何环境</span>
+    </a>
 
     <div id="parts"></div>
 

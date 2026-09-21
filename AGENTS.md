@@ -27,10 +27,11 @@
 - Three.js 会把这些概念全部封装掉，违背教学初衷
 - 唯一例外：大纲末尾的第 16 课是「Three.js 对照课」，让学生体会框架抽象的价值——该课应在学生已掌握原生 WebGL 后再添加
 
-### 零构建、零依赖
+### 零构建；课程零依赖、工具页可用 CDN
 
-- 所有课程都是**纯 HTML + JavaScript**，直接在浏览器打开即可运行
-- 不引入 npm、打包器、框架（教学示例内也不允许 CDN 引入库，common/ 下的手写工具库除外）
+- 所有页面都是**纯 HTML + JavaScript**，直接在浏览器打开即可运行，不引入 npm、打包器、框架
+- **课程示例（lessons/）禁止任何第三方库**（含 CDN）：教学目标是原生 WebGL，库会把概念封装成黑盒
+- **辅助工具页（如 playground/ 练习场）允许经 CDN 引入成熟库**（如 CodeMirror 编辑器），因为它们是工具而不是教学内容；但必须做 CDN 加载失败时的降级
 - 故意的简单性 > 工程化的完备性
 
 ## 目录结构
@@ -44,6 +45,10 @@
 ├── common/
 │   ├── webgl-utils.js   # 公共工具：getContext / compileShader / createProgram / createBuffer / resizeCanvas
 │   └── code-view.js     # 课程页源码展示：读取 main.js 并高亮渲染（含行号）
+├── playground/          # 「动手试试」练习场：选题 → 在线编辑（CodeMirror CDN）→ iframe 实时运行
+│   ├── index.html
+│   ├── playground.js    # 题目注册表（EXERCISES）+ 编辑器 + iframe 运行器
+│   └── templates/       # 每题一个可直接运行的模板，任务写在开头注释
 └── lessons/
     └── NN-kebab-name/   # 每课一个目录：index.html + main.js
 ```
@@ -53,9 +58,10 @@
 1. 在 `lessons/` 下建目录，命名格式：`NN-英文短名/`（NN 为两位课号，如 `03-attributes-interpolation`）
 2. 写 `index.html`：复制已有课程的模板（含「← 返回首页」链接，引用 `../../common/webgl-utils.js` 与 `../../common/code-view.js`，页面下半部分会自动展示本课 main.js 源码）
 3. 写 `main.js`，遵守下面的代码风格
-4. **在 `index.html` 首页的 `parts` 数组中注册该课**：填 `num/title/desc/link`，并把 `ready` 从 `false` 改为 `true`
-5. 同步更新 `README.md` 中的大纲表格（如果内容有变化）
-6. 提交并推送（见下方「部署」），线上约 1 分钟自动更新
+4. （可选）为该课的「动手试试」在练习场加题：`playground/templates/` 下放可直接运行的模板，并在 `playground.js` 的 `EXERCISES` 里注册
+5. **在 `index.html` 首页的 `parts` 数组中注册该课**：填 `num/title/desc/link`，并把 `ready` 从 `false` 改为 `true`
+6. 同步更新 `README.md` 中的大纲表格（如果内容有变化）
+7. 提交并推送（见下方「部署」），线上约 1 分钟自动更新
 
 ## 代码风格约定
 
